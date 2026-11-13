@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Docker Swarm under a self-hosted PaaS: what it gives a small team and what it costs</title><meta name="description" content="Understanding the trade-offs when a deployment platform uses Docker Swarm for multi-server setups."><link rel="canonical" href="https://princeadvant.github.io/paas-exit-playbook/docker-swarm-under-a-self-hosted-paas-what-it-gives-a-small-team-and-w/"><style>body{max-width:720px;margin:2rem auto;padding:0 1rem;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.65;color:#1f2328}pre{background:#f6f8fa;padding:1rem;overflow:auto;border-radius:6px}code{background:#f6f8fa;padding:.1rem .3rem;border-radius:4px}table{border-collapse:collapse}td,th{border:1px solid #d0d7de;padding:.4rem .6rem}a{color:#0969da}header a{color:#1f2328;text-decoration:none;font-weight:600}footer{margin-top:3rem;font-size:.9rem;color:#57606a}</style></head><body><header><a href="https://princeadvant.github.io/paas-exit-playbook/">PaaS Exit Playbook</a></header><main><article><h1>Docker Swarm under a self-hosted PaaS: what it gives a small team and what it costs</h1><p>Some self-hosted platforms use Docker Swarm to run apps across more than one server. Swarm is built into Docker, so it adds no extra install, but it changes how a few things behave.</p>
+<h2>What you gain</h2>
+<ul>
+<li><strong>Placement across nodes.</strong> Services can be scheduled on any worker, with constraints such as "only on nodes labelled db".</li>
+<li><strong>Rolling updates.</strong> <code>update_config</code> with <code>order: start-first</code> starts the new task before stopping the old one.</li>
+<li><strong>Overlay networking.</strong> Containers on different machines talk over an encrypted overlay network by service name.</li>
+<li><strong>Secrets.</strong> Swarm secrets are stored encrypted in the raft log and mounted as files.</li>
+</ul>
+<h2>What it costs</h2>
+<ul>
+<li><strong>Stateful services get harder.</strong> A volume is local to a node. If a database task moves to another node, its data does not follow. Pin stateful services with placement constraints.</li>
+<li><strong>Debugging spans machines.</strong> Logs and <code>docker exec</code> need to happen on whichever node runs the task.</li>
+<li><strong>Manager quorum.</strong> With three managers you can lose one. With one manager, losing it means losing control of the cluster, though running containers keep going.</li>
+<li><strong>Compose differences.</strong> Swarm ignores some Compose keys such as <code>build</code> and <code>depends_on</code> conditions, so files that work locally may need changes.</li>
+</ul>
+<h2>When one server is enough</h2>
+<p>If everything fits on one machine with headroom, plain Docker with Compose is simpler to operate and debug. Add nodes when you have a measured reason, such as isolating a database or needing more CPU for builds.</p>
+<p>A detailed comparison of <a href="https://peon.sh/compare/peon-vs-dokploy">Peon vs Dokploy</a> covers how each handles servers and teams. I work on <a href="https://peon.sh/">Peon</a>, an open-source self-hosted PaaS.</p></article></main><footer>Practical notes on choosing, testing and leaving hosting platforms, written by a contributor to Peon (peon.sh), an open-source self-hosted deployment platform.</footer></body></html>

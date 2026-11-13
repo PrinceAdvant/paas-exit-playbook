@@ -1,0 +1,30 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Next.js output standalone: what gets copied and what you must copy yourself</title><meta name="description" content="Which files end up in .next/standalone and the two folders you need to add to make a working Docker image."><link rel="canonical" href="https://princeadvant.github.io/paas-exit-playbook/next-js-output-standalone-what-gets-copied-and-what-you-must-copy-your/"><style>body{max-width:720px;margin:2rem auto;padding:0 1rem;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.65;color:#1f2328}pre{background:#f6f8fa;padding:1rem;overflow:auto;border-radius:6px}code{background:#f6f8fa;padding:.1rem .3rem;border-radius:4px}table{border-collapse:collapse}td,th{border:1px solid #d0d7de;padding:.4rem .6rem}a{color:#0969da}header a{color:#1f2328;text-decoration:none;font-weight:600}footer{margin-top:3rem;font-size:.9rem;color:#57606a}</style></head><body><header><a href="https://princeadvant.github.io/paas-exit-playbook/">PaaS Exit Playbook</a></header><main><article><h1>Next.js output standalone: what gets copied and what you must copy yourself</h1><p>Setting <code>output: "standalone"</code> in <code>next.config.js</code> makes <code>next build</code> produce a self-contained server in <code>.next/standalone</code>. It traces the dependencies your server code imports and copies only those, which shrinks images dramatically. It does not copy everything.</p>
+<h2>What is included</h2>
+<ul>
+<li><code>server.js</code>, a minimal Node server that runs your app.</li>
+<li>A trimmed <code>node_modules</code> with only the traced packages.</li>
+<li>The server side build output under <code>.next/server</code>.</li>
+</ul>
+<h2>What is missing</h2>
+<ul>
+<li><strong><code>public/</code></strong>: static files are not copied. Copy <code>public</code> into <code>.next/standalone/public</code>.</li>
+<li><strong><code>.next/static</code></strong>: hashed client assets are not copied either. Copy them to <code>.next/standalone/.next/static</code>.</li>
+</ul>
+<p>A minimal final stage looks like this:</p>
+<pre><code>FROM node:20-alpine
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/public ./public
+COPY --from=build /app/.next/static ./.next/static
+EXPOSE 3000
+CMD [&quot;node&quot;, &quot;server.js&quot;]
+</code></pre>
+<h2>Things that trip people up</h2>
+<ul>
+<li><strong>Dynamic requires.</strong> Files loaded with a computed path may not be traced. Add them with <code>outputFileTracingIncludes</code>.</li>
+<li><strong>Host and port.</strong> <code>server.js</code> reads <code>PORT</code> and <code>HOSTNAME</code>. Set <code>HOSTNAME=0.0.0.0</code> so it listens on all interfaces inside the container.</li>
+<li><strong>Monorepos.</strong> Set the tracing root to the repository root, or packages from other workspaces will be missing.</li>
+<li><strong>Image cache.</strong> <code>.next/cache</code> is not part of the standalone output. Mount a volume if you rely on image optimization.</li>
+</ul>
+<p>A complete guide to <a href="https://peon.sh/blogs/nextjs-standalone-docker">Next.js standalone Docker builds</a> covers multi-stage files and image sizes. I work on <a href="https://peon.sh/">Peon</a>, an open-source self-hosted deployment platform.</p></article></main><footer>Practical notes on choosing, testing and leaving hosting platforms, written by a contributor to Peon (peon.sh), an open-source self-hosted deployment platform.</footer></body></html>

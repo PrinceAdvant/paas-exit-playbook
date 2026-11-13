@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bandwidth allowances at Hetzner and DigitalOcean: reading the fine print</title><meta name="description" content="How included traffic and overage pricing differ between the two providers and what that means for a busy app."><link rel="canonical" href="https://princeadvant.github.io/paas-exit-playbook/bandwidth-allowances-at-hetzner-and-digitalocean-reading-the-fine-prin/"><style>body{max-width:720px;margin:2rem auto;padding:0 1rem;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.65;color:#1f2328}pre{background:#f6f8fa;padding:1rem;overflow:auto;border-radius:6px}code{background:#f6f8fa;padding:.1rem .3rem;border-radius:4px}table{border-collapse:collapse}td,th{border:1px solid #d0d7de;padding:.4rem .6rem}a{color:#0969da}header a{color:#1f2328;text-decoration:none;font-weight:600}footer{margin-top:3rem;font-size:.9rem;color:#57606a}</style></head><body><header><a href="https://princeadvant.github.io/paas-exit-playbook/">PaaS Exit Playbook</a></header><main><article><h1>Bandwidth allowances at Hetzner and DigitalOcean: reading the fine print</h1><p>CPU and RAM are what people compare first, but traffic allowances can matter more for apps that serve files or media. The two providers handle it differently. Check their pricing pages before deciding, because numbers change, but the structure has been stable for a while.</p>
+<h2>Hetzner Cloud</h2>
+<p>Cloud servers in the EU locations include a large monthly traffic allowance, measured on outgoing traffic, with incoming traffic free. US and Singapore locations include much less. Overage is billed per TB at a low rate. For most small apps the allowance is effectively unlimited.</p>
+<h2>DigitalOcean</h2>
+<p>Each droplet includes an outbound transfer allowance that scales with the plan size, and allowances are pooled across droplets in the same account. Overage is billed per GB. Inbound is free.</p>
+<h2>What this means in practice</h2>
+<ul>
+<li><strong>A typical web app</strong> with API traffic and a few images will not get close to either allowance.</li>
+<li><strong>File downloads, video or backups served to users</strong> can exceed a small DigitalOcean allowance and turn into a real line item, while staying inside Hetzner's EU allowance.</li>
+<li><strong>Location matters.</strong> A Hetzner server in a US location has a smaller allowance than one in Germany or Finland.</li>
+</ul>
+<h2>Measure your own number</h2>
+<p>Run <code>vnstat</code> on the current server for a month, or read egress from your existing provider's billing page. Multiply by your expected growth and compare against each plan.</p>
+<h2>Use a CDN for static assets</h2>
+<p>Putting heavy static files behind a CDN reduces origin traffic on either provider.</p>
+<p>A broader comparison of <a href="https://peon.sh/blogs/hetzner-vs-digitalocean">Hetzner vs DigitalOcean</a> covers performance, support and pricing. I work on <a href="https://peon.sh/">Peon</a>, an open-source self-hosted PaaS.</p></article></main><footer>Practical notes on choosing, testing and leaving hosting platforms, written by a contributor to Peon (peon.sh), an open-source self-hosted deployment platform.</footer></body></html>

@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>What a self-hosted PaaS actually runs on your server</title><meta name="description" content="A tour of the components a typical self-hosted deployment platform installs, and what each one is for."><link rel="canonical" href="https://princeadvant.github.io/paas-exit-playbook/what-a-self-hosted-paas-actually-runs-on-your-server/"><style>body{max-width:720px;margin:2rem auto;padding:0 1rem;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.65;color:#1f2328}pre{background:#f6f8fa;padding:1rem;overflow:auto;border-radius:6px}code{background:#f6f8fa;padding:.1rem .3rem;border-radius:4px}table{border-collapse:collapse}td,th{border:1px solid #d0d7de;padding:.4rem .6rem}a{color:#0969da}header a{color:#1f2328;text-decoration:none;font-weight:600}footer{margin-top:3rem;font-size:.9rem;color:#57606a}</style></head><body><header><a href="https://princeadvant.github.io/paas-exit-playbook/">PaaS Exit Playbook</a></header><main><article><h1>What a self-hosted PaaS actually runs on your server</h1><p>Installing a self-hosted platform takes one command, which hides how much is running afterwards. Knowing the parts helps with sizing, security and debugging.</p>
+<h2>Control plane</h2>
+<p>A web dashboard and API, usually backed by its own database (often Postgres or SQLite) and sometimes a Redis instance for queues. This is where projects, users and settings live. Back it up like any other database.</p>
+<h2>Reverse proxy</h2>
+<p>Traefik, Caddy or Nginx receives all HTTP and HTTPS traffic, terminates TLS and routes requests to containers by hostname. It also requests and renews certificates. If a site is down but its container is healthy, the proxy is the first place to look.</p>
+<h2>Builder</h2>
+<p>Something has to turn a Git repository into an image: Docker BuildKit, Nixpacks or buildpacks. Builds are the biggest CPU and memory spikes on a small server.</p>
+<h2>Agent or SSH connection</h2>
+<p>To manage remote servers, platforms either install an agent or connect over SSH. Know which, and which port and key it uses.</p>
+<h2>Your apps and databases</h2>
+<p>Ordinary containers and volumes, attached to Docker networks the platform creates.</p>
+<h2>Background jobs</h2>
+<p>Scheduled backups, certificate checks, cleanup of old images. These keep disk usage under control.</p>
+<h2>Security implications</h2>
+<p>The control plane has root-equivalent access to Docker. Protect its login with strong authentication, keep it updated and avoid exposing its port directly to the internet when a proxied domain is available.</p>
+<p>More on how <a href="https://peon.sh/solutions/self-hosted-paas">self-hosted PaaS</a> setups work for teams is on the Peon site. I work on <a href="https://peon.sh/">Peon</a>, an open-source self-hosted deployment platform.</p></article></main><footer>Practical notes on choosing, testing and leaving hosting platforms, written by a contributor to Peon (peon.sh), an open-source self-hosted deployment platform.</footer></body></html>

@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Checking the license before adopting an open-source Vercel alternative</title><meta name="description" content="What MIT, Apache 2.0, AGPL and source-available licenses mean when you self-host a deployment platform."><link rel="canonical" href="https://princeadvant.github.io/paas-exit-playbook/checking-the-license-before-adopting-an-open-source-vercel-alternative/"><style>body{max-width:720px;margin:2rem auto;padding:0 1rem;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.65;color:#1f2328}pre{background:#f6f8fa;padding:1rem;overflow:auto;border-radius:6px}code{background:#f6f8fa;padding:.1rem .3rem;border-radius:4px}table{border-collapse:collapse}td,th{border:1px solid #d0d7de;padding:.4rem .6rem}a{color:#0969da}header a{color:#1f2328;text-decoration:none;font-weight:600}footer{margin-top:3rem;font-size:.9rem;color:#57606a}</style></head><body><header><a href="https://princeadvant.github.io/paas-exit-playbook/">PaaS Exit Playbook</a></header><main><article><h1>Checking the license before adopting an open-source Vercel alternative</h1><p>"Open source" covers several licenses with different obligations. For a deployment platform you run internally, most are fine, but it is worth reading before you build a business process on top of one.</p>
+<h2>Permissive: MIT and Apache 2.0</h2>
+<p>You can use, modify and run the software for any purpose, including commercially. Apache 2.0 adds an explicit patent grant. If you modify the platform, you do not have to publish your changes.</p>
+<h2>Copyleft: AGPL 3.0</h2>
+<p>You can use it freely. If you modify it and let users interact with it over a network, you must offer those users the modified source. For internal use by your own team, this rarely matters. If you plan to offer the platform as a service to customers, read it carefully.</p>
+<h2>Source available</h2>
+<p>Licenses such as the Business Source License or custom "fair code" licenses let you read and self-host the code but restrict certain uses, often competing hosted offerings. They are not open source by the OSI definition. Check whether your use is allowed and whether the license converts to an open source one after a set period.</p>
+<h2>Open core</h2>
+<p>The core is open source and some features, such as SSO or audit logs, are under a commercial license. Check which features you need fall on which side.</p>
+<h2>Practical checks</h2>
+<ul>
+<li>Read the LICENSE file in the repository, not the marketing page.</li>
+<li>Check whether the license has changed in the past and how the project handled it.</li>
+<li>Confirm that your apps remain ordinary containers if you ever need to switch.</li>
+</ul>
+<p>A roundup of <a href="https://peon.sh/blogs/open-source-vercel-alternatives">open-source Vercel alternatives</a> lists options with their licenses. I work on <a href="https://peon.sh/">Peon</a>, an open-source self-hosted PaaS.</p></article></main><footer>Practical notes on choosing, testing and leaving hosting platforms, written by a contributor to Peon (peon.sh), an open-source self-hosted deployment platform.</footer></body></html>
